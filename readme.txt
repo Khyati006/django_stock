@@ -1,0 +1,1 @@
+This is simple Stock Portfolio website using django and python. The website is currently focusing on searching and retriving current stock information,adding new stock to portfolio and deleting exsisting one.IEX cloud API is used to get the data of the stocks.

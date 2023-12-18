@@ -9,7 +9,7 @@ def home(request):
 
 	if request.method =='POST':
 		ticker=request.POST['ticker']
-		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_e21abddc627648578529be6a311cebf3")
+		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_981e713d34cc4c52beb79d420c5772f3")
 
 		try:
 			api=json.loads(api_request.content)
@@ -25,37 +25,39 @@ def about(request):
 	return render(request,'about.html',{})
 
 def add_stock(request):
-	import requests
-	import json  
-	if request.method =='POST':
-		form=StockForm(request.POST or None)
+	import requests 
+	import json 
+
+	if request.method == 'POST':
+		form = StockForm(request.POST or None)
 
 		if form.is_valid():
 			form.save()
-			messages.success(request,("Stock Has Been Added!"))
+			messages.success(request, ("Stock Has Been Added!"))
 			return redirect('add_stock')
-	else:
-		ticker=Stock.objects.all()
-		output=[]
-		for ticker_item in ticker:
-			api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + str(ticker_item) + "/quote?token=pk_e21abddc627648578529be6a311cebf3")
 
+	else:	
+		ticker = Stock.objects.all()
+		output = []
+		for ticker_item in ticker:
+			api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + str(ticker_item) + "/quote?token=pk_062031d20883444f9ea74e2610fe2011")
 			try:
-				api=json.loads(api_request.content)
+				api = json.loads(api_request.content)
 				output.append(api)
 			except Exception as e:
-				api="Error..."
-			
+				api = "Error..."
+		
+		return render(request, 'add_stock.html', {'ticker': ticker, 'output': output})
 
-		return render(request,'add_stock.html',{'ticker':ticker,'output':output})
 
-
-def delete(request,stock_id):
-	item=Stock.objects.get(pk=stock_id)
+def delete(request, stock_id):
+	item = Stock.objects.get(pk=stock_id)
 	item.delete()
-	messages.success(request,("Stock Has Been Deleted!"))
+	messages.success(request, ("Stock Has Been Deleted!"))
 	return redirect(delete_stock)
 
+
+
 def delete_stock(request):
-	ticker=Stock.objects.all()
-	return render(request,'delete_stock.html',{'ticker':ticker})
+	ticker = Stock.objects.all()
+	return render(request, 'delete_stock.html', {'ticker': ticker})
